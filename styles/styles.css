@@ -1,13 +1,17 @@
-div {
-  position: absolute;
-  transform-origin: 50% 50% -2000px;
-  transform: rotateY(1deg);
-}
-
 .container {
   position: relative;
   display: flex;
   justify-content: center;
   user-select: none;
   perspective: 1000px;
+}
+
+div {
+  position: absolute;
+  transform-origin: 50% 50% -2000px;
+  transform: rotateY(1deg);
+}
+
+div img {
+  -webkit-user-drag: none;
 }

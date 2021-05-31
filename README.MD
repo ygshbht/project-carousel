@@ -35,18 +35,22 @@ Additonally, you may enter a third argument (object) while creating a class inst
 
 Below specified styling is curcial for the carousel to function properly.
 
-            div {
-            position: absolute;
-            transform-origin: 50% 50% -2000px;
-            transform: rotateY(1deg);
-            }
-
             .container {
                   position: relative;
                   display: flex;
                   justify-content: center;
                   user-select: none;
                   perspective: 1000px;
+            }
+
+            div {
+            position: absolute;
+            transform-origin: 50% 50% -2000px;
+            transform: rotateY(1deg);
+            }
+
+            div img{
+                  -webkit-user-drag: none;
             }
 
 Speed of elements after swiping can be modified by using the below properties:
