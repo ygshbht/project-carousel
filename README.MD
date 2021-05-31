@@ -42,7 +42,7 @@ Many of the below specified stylings are curcial for the carousel to function pr
                   perspective: 1000px;
             }
 
-            div#virtual-carousel {
+            #virtual-carousel > div {
                   user-select: none;
                   position: absolute;
                   transform-origin: 50% 50% -2000px;
@@ -50,7 +50,7 @@ Many of the below specified stylings are curcial for the carousel to function pr
                   backface-visibility: hidden;
             }
 
-            div#virtual-carousel img {
+            #virtual-carousel img {
                   user-select: none;
             }
 

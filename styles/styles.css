@@ -1,4 +1,4 @@
-.container {
+.container#virtual-carousel {
   user-select: none;
   position: relative;
   display: flex;
@@ -6,7 +6,7 @@
   perspective: 1000px;
 }
 
-.element {
+#virtual-carousel > div {
   user-select: none;
   position: absolute;
   transform-origin: 50% 50% -2000px;
@@ -14,6 +14,6 @@
   backface-visibility: hidden;
 }
 
-.element img {
+#virtual-carousel img {
   user-select: none;
 }
