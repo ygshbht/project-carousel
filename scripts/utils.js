@@ -4,6 +4,7 @@ export function get_rotationY(element) {
   let degrees = (radians * 180) / Math.PI;
   return degrees;
 }
+const log = console.log
 
 export function getVisibleWidth(element, includeMargin = false) {
   let width = 0;
@@ -12,15 +13,24 @@ export function getVisibleWidth(element, includeMargin = false) {
   width += parseFloat(elmntStyle.width);
 
   if (elmntStyle.boxSizing === "content-box") {
-    width += parseFloat(elmntStyle.paddingLeft);
-    width += parseFloat(elmntStyle.paddingRight);
-    width += parseFloat(elmntStyle.borderLeft);
-    width += parseFloat(elmntStyle.borderRight);
-  }
+    //mozilla loses shit if direclty inputted elmntStyle.borderLeft. pls check previous commit to understand this verbsity
+    let bdrLeft=elmntStyle.borderLeft ===""?0:elmntStyle.borderLeft
+    let bdrRight=elmntStyle.borderRight ===""?0:elmntStyle.borderRight
+    let pdngLeft=elmntStyle.paddingLeft ===""?0:elmntStyle.paddingLeft
+    let pdngRight=elmntStyle.paddingLeft ===""?0:elmntStyle.paddingRight
+    width += parseFloat(pdngLeft) 
+    width += parseFloat(pdngRight)
+    width += parseFloat(bdrLeft) 
+    width += parseFloat(bdrRight)
+ 
+    }
 
   if (includeMargin) {
-    width += parseFloat(elmntStyle.marginLeft);
-    width += parseFloat(elmntStyle.marginRight);
+    let mrgnLeft=elmntStyle.marginLeft ===""?0:elmntStyle.marginLeft
+    let mrgnRight=elmntStyle.marginRight ===""?0:elmntStyle.marginRight
+    width += parseFloat(mrgnLeft);
+    width += parseFloat(mrgnRight);
+  
   }
 
   return width;
@@ -43,11 +53,3 @@ export function calc_zIndex(total_rotation, extra_degress) {
   return parseInt(z_index);
 }
 
-export function calc_opacity(total_rotation, extra_degress) {
-  let opacity;
-  let rotationToApply = (total_rotation + extra_degress) % 360;
-  if (rotationToApply >= 60 && rotationToApply <= 300) opacity = 0;
-  else if (rotationToApply <= -60 && rotationToApply >= -300) opacity = 0;
-  else opacity = 1;
-  return opacity;
-}

@@ -8,6 +8,9 @@ export function calc_transform_origin(project_list, circumference) {
     project.style.transformOrigin = `${parseFloat(
       project_transformOrigin[0]
     )}px ${parseFloat(project_transformOrigin[1])}px ${parseFloat(radius)}px `;
+
   });
+
+  
   return radius;
 }

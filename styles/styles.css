@@ -1,17 +1,19 @@
 .container {
+  user-select: none;
   position: relative;
   display: flex;
   justify-content: center;
-  user-select: none;
   perspective: 1000px;
 }
 
-div {
+.element {
+  user-select: none;
   position: absolute;
   transform-origin: 50% 50% -2000px;
   transform: rotateY(1deg);
+  backface-visibility: hidden;
 }
 
-div img {
-  -webkit-user-drag: none;
+.element img {
+  user-select: none;
 }

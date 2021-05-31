@@ -1,12 +1,16 @@
-import { calcTotalWidth } from "./calcTotalWidth.js";
+import { calcTotalWidth, getWidhtUpto } from "./calcTotalWidth.js";
 import { calc_transform_origin } from "./calc_transform_origin.js";
 import { calc_velocity, add_force } from "./calc_velocity.js";
 import { get_rotationY, mouseHoldAtEnd } from "./utils.js";
-import { calc_zIndex, calc_opacity as calcOpacity } from "./utils.js";
+import { calc_zIndex } from "./utils.js";
+
+let log=console.log
 
 export default class Carousel {
   mouse_down = false;
   mouse_in = true;
+
+  extraDegressList = [];
 
   hold_threshold = 120;
   friction = 0.15;
@@ -15,6 +19,7 @@ export default class Carousel {
 
   mouse_X_coord = 0;
   totalRotation = 0;
+  total_width=0
 
   mouseVelMultiplier = 1;
   touchVelMultiplier = 1;
@@ -27,25 +32,19 @@ export default class Carousel {
 
   nullifyMouseXpositions = () => (this.mouseXpositions = []);
 
-  async setRadiusAndCircumference() {
-    return (this.total_width = await calcTotalWidth(this.elements, {
-      gap: this.gap,
-      includeMargin: this.includeMargin,
-      limitWidth: this.limitWidth,
-    }).then((value) => value));
-  }
-
   constructor(
     elements,
     container,
     modifiers = { gap: 10, includeMargin: false, limitWidth: true }
   ) {
+    container.ondragstart = () => false;
     this.gap = modifiers.gap ?? 10;
     this.includeMargin = modifiers.includeMargin ?? false;
     this.limitWidth = modifiers.limitWidth ?? true;
     this.project = elements[0];
+    this.projectStyle = getComputedStyle(elements[0]);
     this.elements = elements;
-    this.projects_container = container;
+    this.container = container;
 
     this.project_rotateY = get_rotationY(this.project);
     this.totalProjects = elements.length;
@@ -55,23 +54,30 @@ export default class Carousel {
       includeMargin: this.includeMargin,
       limitWidth: this.limitWidth,
     }).then((width) => {
+      
       this.total_width = width;
+      log("while setting up", typeof width, this.total_width)
       this.rotation_radius = calc_transform_origin(
         this.elements,
         this.total_width
       );
       this.circumference = Math.abs(2 * Math.PI * this.rotation_radius);
       this.degreesPerCircum = 360 / this.circumference;
+
+      this.elements.forEach((elem, index) => {
+        let widthUpto = getWidhtUpto(this.elements, index, this.gap, this.includeMargin)
+        let extraDegress = (widthUpto/this.total_width)*360
+
+        this.extraDegressList.push(extraDegress)
+
+        elem.style.transform = `rotateY(${
+          (this.totalRotation + extraDegress) % 360
+          }deg)`;
+        
+     
+     
+        elem.style.zIndex = `${calc_zIndex(this.totalRotation, extraDegress)}`;
     });
-
-    this.elements.forEach((elem, index) => {
-      let extraDegress = (360 / this.totalProjects) * index;
-      elem.style.transform = `rotateY(${
-        (this.totalRotation + extraDegress) % 360
-      }deg)`;
-
-      elem.style.opacity = `${calcOpacity(this.totalRotation, extraDegress)}`;
-      elem.style.zIndex = `${calc_zIndex(this.totalRotation, extraDegress)}`;
     });
 
     this.mousedownHandler = (e) => {
@@ -82,7 +88,7 @@ export default class Carousel {
       this.mouseXpositions = [];
     };
 
-    this.projects_container.addEventListener(
+    this.container.addEventListener(
       "mousedown",
       this.mousedownHandler
     );
@@ -105,7 +111,7 @@ export default class Carousel {
       this.mouseXpositions = [];
     };
 
-    this.projects_container.addEventListener("mouseup", this.mouseupHandler);
+    this.container.addEventListener("mouseup", this.mouseupHandler);
 
     this.mouseleaveHandler = () => {
       this.mouse_in = false;
@@ -127,7 +133,7 @@ export default class Carousel {
       this.mouseXpositions = [];
     };
 
-    this.projects_container.addEventListener(
+    this.container.addEventListener(
       "mouseleave",
       this.mouseleaveHandler
     );
@@ -136,7 +142,7 @@ export default class Carousel {
       this.mouse_in = true;
     };
 
-    this.projects_container.addEventListener(
+    this.container.addEventListener(
       "mouseenter",
       this.mouseenterHandler
     );
@@ -150,48 +156,42 @@ export default class Carousel {
       this.totalRotation = this.project_rotateY + degress_to_rotate;
 
       this.elements.forEach((project, index) => {
-        let extraDegress = (360 / this.totalProjects) * index;
+        let extraDegress = this.extraDegressList[index]
+
         project.style.transform = `rotateY(${
           (this.totalRotation + extraDegress) % 360
         }deg)`;
 
-        project.style.opacity = `${calcOpacity(
-          this.totalRotation,
-          extraDegress
-        )}`;
-        project.style.zIndex = `${calc_zIndex(
-          this.totalRotation,
-          extraDegress
-        )}`;
+        project.style.zIndex = `${calc_zIndex(this.totalRotation, extraDegress)}`;
       });
 
       this.mouseXpositions.push([e.clientX, new Date().getTime()]);
       if (this.mouseXpositions.length >= 15) this.mouseXpositions.shift();
     };
 
-    this.projects_container.addEventListener(
+    this.container.addEventListener(
       "mousemove",
       this.mousemoveHandler
     );
 
     this.removeMouseEvents = () => {
-      this.projects_container.removeEventListener(
+      this.container.removeEventListener(
         "mousedown",
         this.mousedownHandler
       );
-      this.projects_container.removeEventListener(
+      this.container.removeEventListener(
         "mouseup",
         this.mouseupHandler
       );
-      this.projects_container.removeEventListener(
+      this.container.removeEventListener(
         "mouseleave",
         this.mouseleaveHandler
       );
-      this.projects_container.removeEventListener(
+      this.container.removeEventListener(
         "mousemove",
         this.mousemoveHandler
       );
-      this.projects_container.removeEventListener(
+      this.container.removeEventListener(
         "mouseenter",
         this.mouseenterHandler
       );
@@ -204,7 +204,7 @@ export default class Carousel {
       this.project_rotateY = get_rotationY(this.project);
     };
 
-    this.projects_container.addEventListener(
+    this.container.addEventListener(
       "touchstart",
       this.touchstartHandler
     );
@@ -225,7 +225,7 @@ export default class Carousel {
       this.mouseXpositions = [];
     };
 
-    this.projects_container.addEventListener("touchend", this.touchendHandler);
+    this.container.addEventListener("touchend", this.touchendHandler);
 
     this.touchmoveHandler = (e) => {
       let horizontalDistMoved = e.targetTouches[0].pageX - this.mouse_X_coord;
@@ -234,15 +234,13 @@ export default class Carousel {
       this.totalRotation = this.project_rotateY + degress_to_rotate;
 
       this.elements.forEach((project, index) => {
-        let extraDegress = (360 / this.totalProjects) * index;
+        let extraDegress = this.extraDegressList[index]
+
         project.style.transform = `rotateY(${
           (this.totalRotation + extraDegress) % 360
         }deg)`;
 
-        project.style.opacity = `${calcOpacity(
-          this.totalRotation,
-          extraDegress
-        )}`;
+        
         project.style.zIndex = `${calc_zIndex(
           this.totalRotation,
           extraDegress
@@ -256,7 +254,7 @@ export default class Carousel {
       if (this.mouseXpositions.length >= 15) this.mouseXpositions.shift();
     };
 
-    this.projects_container.addEventListener(
+    this.container.addEventListener(
       "touchmove",
       this.touchmoveHandler
     );
@@ -277,25 +275,25 @@ export default class Carousel {
       this.mouseXpositions = [];
     };
 
-    this.projects_container.addEventListener(
+    this.container.addEventListener(
       "touchcancel",
       this.touchcancelHandler
     );
 
     this.removeTouchEvents = () => {
-      this.projects_container.removeEventListener(
+      this.container.removeEventListener(
         "touchstart",
         this.touchstartHandler
       );
-      this.projects_container.removeEventListener(
+      this.container.removeEventListener(
         "touchend",
         this.touchendHandler
       );
-      this.projects_container.removeEventListener(
+      this.container.removeEventListener(
         "touchmove",
         this.touchmoveHandler
       );
-      this.projects_container.removeEventListener(
+      this.container.removeEventListener(
         "touchcancel",
         this.touchcancelHandler
       );
