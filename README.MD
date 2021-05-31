@@ -32,7 +32,7 @@ Additonally, you may enter a third argument (object) while creating a class inst
                   includeMargin: false, // if true, then margin will be added in circumference,
             }
 
-Many of the below specified stylings are curcial for the carousel to function properly. The same has been provided in a CSS file inside the sibling folder, Styles, of the Script folder. 
+Many of the below specified stylings are curcial for the carousel to function properly. The same has been provided in a CSS file inside the sibling folder, Styles, of the Script folder.
 
             .container#virtual-carousel {
                   user-select: none;
@@ -54,13 +54,13 @@ Many of the below specified stylings are curcial for the carousel to function pr
                   user-select: none;
             }
 
- &nbsp;  
+&nbsp;
 
-             <link rel="stylesheet" href="./styles.css" />
+             <link rel="stylesheet" href="./node_modules/virtual-carousel/styles/styles.css" />
 
 ##### Note: Classes and IDs do not get automatically added, hence for the above styling to work, the elements would have to be provided the above selectors or these need to be changed
 
- &nbsp;  
+&nbsp;
 
 Speed of elements after swiping can be modified by using the below properties:
 
@@ -69,9 +69,9 @@ Speed of elements after swiping can be modified by using the below properties:
 
 <sup>1</sup> Divs enclose images for cases when you want to add more elements on top of images like buttons, text, etc. Widths of these extra elements may not be taken into consideration (especially elements including media such as background video or another images which take time to load) while calculating circumference. These elements are expected to be abosolutely positioned to avoid lengthy divs.  
 &nbsp;  
-As only the carousel is round/ cylindrical and not the elements/ images themselves, the images (their divs) are better off with 
-limited widths. 
+As only the carousel is round/ cylindrical and not the elements/ images themselves, the images (their divs) are better off with
+limited widths.
 
-&nbsp;  
+&nbsp;
 
 It is recommended to consider using events like onload and oncomplete to fully load all the media before instantiating the Carousel class when there is more than just an image media inside the parent Divs.
