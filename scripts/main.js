@@ -4,8 +4,6 @@ import { calc_velocity, add_force } from "./calc_velocity.js";
 import { get_rotationY, mouseHoldAtEnd } from "./utils.js";
 import { calc_zIndex } from "./utils.js";
 
-let log=console.log
-
 export default class Carousel {
   mouse_down = false;
   mouse_in = true;
@@ -19,7 +17,7 @@ export default class Carousel {
 
   mouse_X_coord = 0;
   totalRotation = 0;
-  total_width=0
+  total_width = 0;
 
   mouseVelMultiplier = 1;
   touchVelMultiplier = 1;
@@ -54,9 +52,7 @@ export default class Carousel {
       includeMargin: this.includeMargin,
       limitWidth: this.limitWidth,
     }).then((width) => {
-      
       this.total_width = width;
-      log("while setting up", typeof width, this.total_width)
       this.rotation_radius = calc_transform_origin(
         this.elements,
         this.total_width
@@ -65,19 +61,22 @@ export default class Carousel {
       this.degreesPerCircum = 360 / this.circumference;
 
       this.elements.forEach((elem, index) => {
-        let widthUpto = getWidhtUpto(this.elements, index, this.gap, this.includeMargin)
-        let extraDegress = (widthUpto/this.total_width)*360
+        let widthUpto = getWidhtUpto(
+          this.elements,
+          index,
+          this.gap,
+          this.includeMargin
+        );
+        let extraDegress = (widthUpto / this.total_width) * 360;
 
-        this.extraDegressList.push(extraDegress)
+        this.extraDegressList.push(extraDegress);
 
         elem.style.transform = `rotateY(${
           (this.totalRotation + extraDegress) % 360
-          }deg)`;
-        
-     
-     
+        }deg)`;
+
         elem.style.zIndex = `${calc_zIndex(this.totalRotation, extraDegress)}`;
-    });
+      });
     });
 
     this.mousedownHandler = (e) => {
@@ -88,10 +87,7 @@ export default class Carousel {
       this.mouseXpositions = [];
     };
 
-    this.container.addEventListener(
-      "mousedown",
-      this.mousedownHandler
-    );
+    this.container.addEventListener("mousedown", this.mousedownHandler);
 
     this.mouseupHandler = () => {
       this.mouse_down = false;
@@ -133,19 +129,13 @@ export default class Carousel {
       this.mouseXpositions = [];
     };
 
-    this.container.addEventListener(
-      "mouseleave",
-      this.mouseleaveHandler
-    );
+    this.container.addEventListener("mouseleave", this.mouseleaveHandler);
 
     this.mouseenterHandler = () => {
       this.mouse_in = true;
     };
 
-    this.container.addEventListener(
-      "mouseenter",
-      this.mouseenterHandler
-    );
+    this.container.addEventListener("mouseenter", this.mouseenterHandler);
 
     this.mousemoveHandler = (e) => {
       if (!(this.mouse_down && this.mouse_in)) return;
@@ -156,45 +146,30 @@ export default class Carousel {
       this.totalRotation = this.project_rotateY + degress_to_rotate;
 
       this.elements.forEach((project, index) => {
-        let extraDegress = this.extraDegressList[index]
+        let extraDegress = this.extraDegressList[index];
 
         project.style.transform = `rotateY(${
           (this.totalRotation + extraDegress) % 360
         }deg)`;
 
-        project.style.zIndex = `${calc_zIndex(this.totalRotation, extraDegress)}`;
+        project.style.zIndex = `${calc_zIndex(
+          this.totalRotation,
+          extraDegress
+        )}`;
       });
 
       this.mouseXpositions.push([e.clientX, new Date().getTime()]);
       if (this.mouseXpositions.length >= 15) this.mouseXpositions.shift();
     };
 
-    this.container.addEventListener(
-      "mousemove",
-      this.mousemoveHandler
-    );
+    this.container.addEventListener("mousemove", this.mousemoveHandler);
 
     this.removeMouseEvents = () => {
-      this.container.removeEventListener(
-        "mousedown",
-        this.mousedownHandler
-      );
-      this.container.removeEventListener(
-        "mouseup",
-        this.mouseupHandler
-      );
-      this.container.removeEventListener(
-        "mouseleave",
-        this.mouseleaveHandler
-      );
-      this.container.removeEventListener(
-        "mousemove",
-        this.mousemoveHandler
-      );
-      this.container.removeEventListener(
-        "mouseenter",
-        this.mouseenterHandler
-      );
+      this.container.removeEventListener("mousedown", this.mousedownHandler);
+      this.container.removeEventListener("mouseup", this.mouseupHandler);
+      this.container.removeEventListener("mouseleave", this.mouseleaveHandler);
+      this.container.removeEventListener("mousemove", this.mousemoveHandler);
+      this.container.removeEventListener("mouseenter", this.mouseenterHandler);
     };
 
     this.touchstartHandler = (e) => {
@@ -204,10 +179,7 @@ export default class Carousel {
       this.project_rotateY = get_rotationY(this.project);
     };
 
-    this.container.addEventListener(
-      "touchstart",
-      this.touchstartHandler
-    );
+    this.container.addEventListener("touchstart", this.touchstartHandler);
 
     this.touchendHandler = () => {
       if (this.mouseXpositions.length >= 2)
@@ -234,13 +206,12 @@ export default class Carousel {
       this.totalRotation = this.project_rotateY + degress_to_rotate;
 
       this.elements.forEach((project, index) => {
-        let extraDegress = this.extraDegressList[index]
+        let extraDegress = this.extraDegressList[index];
 
         project.style.transform = `rotateY(${
           (this.totalRotation + extraDegress) % 360
         }deg)`;
 
-        
         project.style.zIndex = `${calc_zIndex(
           this.totalRotation,
           extraDegress
@@ -254,10 +225,7 @@ export default class Carousel {
       if (this.mouseXpositions.length >= 15) this.mouseXpositions.shift();
     };
 
-    this.container.addEventListener(
-      "touchmove",
-      this.touchmoveHandler
-    );
+    this.container.addEventListener("touchmove", this.touchmoveHandler);
 
     this.touchcancelHandler = (e) => {
       if (this.mouseXpositions.length >= 2)
@@ -275,24 +243,12 @@ export default class Carousel {
       this.mouseXpositions = [];
     };
 
-    this.container.addEventListener(
-      "touchcancel",
-      this.touchcancelHandler
-    );
+    this.container.addEventListener("touchcancel", this.touchcancelHandler);
 
     this.removeTouchEvents = () => {
-      this.container.removeEventListener(
-        "touchstart",
-        this.touchstartHandler
-      );
-      this.container.removeEventListener(
-        "touchend",
-        this.touchendHandler
-      );
-      this.container.removeEventListener(
-        "touchmove",
-        this.touchmoveHandler
-      );
+      this.container.removeEventListener("touchstart", this.touchstartHandler);
+      this.container.removeEventListener("touchend", this.touchendHandler);
+      this.container.removeEventListener("touchmove", this.touchmoveHandler);
       this.container.removeEventListener(
         "touchcancel",
         this.touchcancelHandler

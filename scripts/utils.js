@@ -4,7 +4,6 @@ export function get_rotationY(element) {
   let degrees = (radians * 180) / Math.PI;
   return degrees;
 }
-const log = console.log
 
 export function getVisibleWidth(element, includeMargin = false) {
   let width = 0;
@@ -13,26 +12,22 @@ export function getVisibleWidth(element, includeMargin = false) {
   width += parseFloat(elmntStyle.width);
 
   if (elmntStyle.boxSizing === "content-box") {
-    //mozilla loses shit if direclty inputted elmntStyle.borderLeft. pls check previous commit to understand this verbsity
-    let bdrLeft=elmntStyle.borderLeft ===""?0:elmntStyle.borderLeft
-    let bdrRight=elmntStyle.borderRight ===""?0:elmntStyle.borderRight
-    let pdngLeft=elmntStyle.paddingLeft ===""?0:elmntStyle.paddingLeft
-    let pdngRight=elmntStyle.paddingLeft ===""?0:elmntStyle.paddingRight
-    width += parseFloat(pdngLeft) 
-    width += parseFloat(pdngRight)
-    width += parseFloat(bdrLeft) 
-    width += parseFloat(bdrRight)
- 
-    }
-
-  if (includeMargin) {
-    let mrgnLeft=elmntStyle.marginLeft ===""?0:elmntStyle.marginLeft
-    let mrgnRight=elmntStyle.marginRight ===""?0:elmntStyle.marginRight
-    width += parseFloat(mrgnLeft);
-    width += parseFloat(mrgnRight);
-  
+    let bdrLeft = elmntStyle.borderLeft === "" ? 0 : elmntStyle.borderLeft;
+    let bdrRight = elmntStyle.borderRight === "" ? 0 : elmntStyle.borderRight;
+    let pdngLeft = elmntStyle.paddingLeft === "" ? 0 : elmntStyle.paddingLeft;
+    let pdngRight = elmntStyle.paddingLeft === "" ? 0 : elmntStyle.paddingRight;
+    width += parseFloat(pdngLeft);
+    width += parseFloat(pdngRight);
+    width += parseFloat(bdrLeft);
+    width += parseFloat(bdrRight);
   }
 
+  if (includeMargin) {
+    let mrgnLeft = elmntStyle.marginLeft === "" ? 0 : elmntStyle.marginLeft;
+    let mrgnRight = elmntStyle.marginRight === "" ? 0 : elmntStyle.marginRight;
+    width += parseFloat(mrgnLeft);
+    width += parseFloat(mrgnRight);
+  }
   return width;
 }
 
@@ -52,4 +47,3 @@ export function calc_zIndex(total_rotation, extra_degress) {
   );
   return parseInt(z_index);
 }
-

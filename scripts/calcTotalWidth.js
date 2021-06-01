@@ -1,4 +1,3 @@
-let log = console.log;
 import { getVisibleWidth } from "./utils.js";
 
 export function calcTotalWidth(
@@ -23,53 +22,40 @@ export function calcTotalWidth(
 
     function addWidthPostLoading() {
       elementsToConsider--;
-      
+
       if (elementsToConsider === 0) {
         let counter = 0;
         project_list.forEach((project) => {
           counter += getVisibleWidth(project, includeMargin);
           counter += gap;
         });
-        // if (limitWidth) {
-        //   project_list.forEach((project) => {
-        //     setMaxWidthforElement(project, project_list.length, counter, gap);
-        //   });
-        // }
-        log("from calc total widht  moduel",{counter, gap, includeMargin})
         resolve(counter);
       }
     }
   });
 }
 
-function setMaxWidthforElement(element, totalElements, total_width, gap) {
-  // log({projectWidth: getComputedStyle(element).width })
-  // let maxWidth = (total_width - gap * totalElements) / totalElements;
-
-  // element.style.maxWidth = `${maxWidth}px`;
-}
-
 export function getWidhtUpto(project_list, upto, gap, includeMargin) {
-  let counter = 0
-  if (upto===0) return 0
+  let counter = 0;
+  if (upto === 0) return 0;
   project_list.forEach((project, index) => {
     if (index === 0) {
-      let first_half_widht = parseInt(getComputedStyle(project).width)/2
-      counter += first_half_widht
+      let first_half_widht = parseInt(getComputedStyle(project).width) / 2;
+      counter += first_half_widht;
       counter += gap;
-      return
-       }
-
-    if (index === upto) {
-      let last_half_width = parseInt(getComputedStyle(project).width)/2
-      counter +=last_half_width
-      return
+      return;
     }
 
-    if (index > upto) return
-    
+    if (index === upto) {
+      let last_half_width = parseInt(getComputedStyle(project).width) / 2;
+      counter += last_half_width;
+      return;
+    }
+
+    if (index > upto) return;
+
     counter += getVisibleWidth(project, includeMargin);
     counter += gap;
   });
-  return counter
+  return counter;
 }
