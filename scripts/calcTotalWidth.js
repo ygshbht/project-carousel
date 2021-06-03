@@ -10,7 +10,10 @@ export function calcTotalWidth(
 
     project_list.forEach((project) => {
       let img = project.querySelector("img");
-      if (!img) return;
+      if (!img) {
+        addWidthPostLoading();
+        return;
+      }
       if (img.complete) {
         addWidthPostLoading();
       } else {
