@@ -1,8 +1,8 @@
 {
   "name": "virtual-carousel",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "Image carousel",
-  "main": "./scripts/main.js",
+  "main": "./lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel ./src -d ./lib"
