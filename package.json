@@ -1,6 +1,6 @@
 {
   "name": "virtual-carousel",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "Image carousel",
   "main": "./lib/index.js",
   "scripts": {
@@ -11,7 +11,7 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ygshbht/project-carousel"
+    "url": "https://github.com/ygshbht/virtual-carousel"
   },
   "devDependencies": {
     "@babel/cli": "^7.14.5",
