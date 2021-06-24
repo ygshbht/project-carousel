@@ -41,6 +41,12 @@ export default class Carousel {
     this.totalProjects = this.elements.length;
 
     container.ondragstart = () => false;
+    if (this.setStyles) {
+      setContainerStyles(this.container, this.isOrthographic);
+      this.elements.forEach((elem) => {
+        setWrapperStyles(elem, this.isOrthographic);
+      });
+    }
 
     calcTotalWidth(this.elements, {
       gap: this.gap,
@@ -51,9 +57,7 @@ export default class Carousel {
       this.radius = calcTransformOrigin(this.elements, this.total_width);
       this.circumference = Math.abs(2 * Math.PI * this.radius);
       this.degreesPerCircum = 360 / this.circumference;
-      if (this.setStyles) setContainerStyles(this.container, this.isOrthographic);
       this.elements.forEach((elem, index) => {
-        if (this.setStyles) setWrapperStyles(elem, this.isOrthographic);
         let widthUpto = getWidhtUpto(this.elements, index, this.gap, this.includeMargin);
         let extraDegress = (widthUpto / this.total_width) * 360;
 
