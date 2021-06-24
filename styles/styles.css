@@ -1,19 +1,16 @@
-.container#virtual-carousel {
+.container {
   user-select: none;
   position: relative;
   display: flex;
+  /**/
   justify-content: center;
-  perspective: 1000px;
+  perspective: 1000px; /* for non orthographic carousel*/
 }
 
-#virtual-carousel > div {
+.container > .wrapper {
   user-select: none;
   position: absolute;
-  transform-origin: 50% 50% -2000px;
   transform: rotateY(1deg);
-  backface-visibility: hidden;
-}
-
-#virtual-carousel img {
-  user-select: none;
+  backface-visibility: hidden; /*optional*/
+  backface-visibility: preserve-3d; /* for orthographic*/
 }

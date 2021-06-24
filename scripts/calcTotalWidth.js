@@ -1,13 +1,10 @@
 import { getVisibleWidth } from "./utils.js";
-
-export function calcTotalWidth(
-  project_list,
-  modifiers = { gap: 0, includeMargin: false }
-) {
+const log = console.log;
+export function calcTotalWidth(project_list, modifiers = { gap: 0, includeMargin: false }) {
   let { gap, includeMargin, limitWidth } = modifiers;
   return new Promise((resolve, reject) => {
     let elementsToConsider = project_list.length;
-
+    // log(project_list);
     project_list.forEach((project) => {
       let img = project.querySelector("img");
       if (!img) {
@@ -17,7 +14,7 @@ export function calcTotalWidth(
       if (img.complete) {
         addWidthPostLoading();
       } else {
-        img.addEventListener("load", () => {
+        img.addEventListener("loadedmetadata", () => {
           addWidthPostLoading();
         });
       }
