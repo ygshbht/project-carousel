@@ -1,9 +1,11 @@
 # Create an image carousel
 
 To check implementation, please visit [this website.](https://yogeshbhatt.com/projects/carousel/public/)  
-To create a carousel, import the Carousel class from the main.js file like
+To create a carousel, import the Carousel class from the index.js file like
 
-      import Carousel from "./node_modules/virtual-carousel/scripts/main.js"
+      import Carousel from "./node_modules/virtual-carousel/src/index.js"
+      //or
+      import Carousel from "virtual-carousel"
 
 ##### (path here is relative to the parent of node_modules folder)
 
