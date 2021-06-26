@@ -14,7 +14,7 @@ export function calcTotalWidth(project_list, modifiers = { gap: 0, includeMargin
       if (img.complete) {
         addWidthPostLoading();
       } else {
-        img.addEventListener("loadedmetadata", () => {
+        img.addEventListener("load", () => {
           addWidthPostLoading();
         });
       }
