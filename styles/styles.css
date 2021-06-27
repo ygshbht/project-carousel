@@ -2,7 +2,6 @@
   user-select: none;
   position: relative;
   display: flex;
-  /**/
   justify-content: center;
   perspective: 1000px; /* for non orthographic carousel*/
 }
@@ -12,5 +11,5 @@
   position: absolute;
   transform: rotateY(1deg);
   backface-visibility: hidden; /*optional*/
-  backface-visibility: preserve-3d; /* for orthographic*/
+  transform-style: preserve-3d; /* for orthographic*/
 }

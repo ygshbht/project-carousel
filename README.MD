@@ -30,7 +30,7 @@ Imagine all images are put side by side in a row and then the ends of the sidemo
 Additonally, you may enter a third argument (object) while creating a class instance to modify the carousel's behaviour. All options with defaults are as below:
 
             {
-                  gap:10px, //extra space between images
+                  gap:30px, //extra space between images
                   includeMargin: false, // if true, then margin will be added in circumference,
                   isOrthographic: false; // if true, the carousel will appear like a belt of images rather than a circular carousel,
                   setStyles:true// this property sets the basic CSS styles that are required for the carousel to work, if false, then you may need the add the CSS manually (below)
@@ -51,7 +51,7 @@ Many of the below specified stylings are curcial for the carousel to function pr
                   position: absolute;
                   transform: rotateY(1deg);
                   backface-visibility: hidden; //optional
-                  backface-visibility: preserve-3d; // for orthographic
+                  transform-style: preserve-3d; // for orthographic
             }
 
 &nbsp;
