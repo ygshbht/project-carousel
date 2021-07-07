@@ -26,6 +26,12 @@ export function setWrapperStyles(wrapper, isOrthographic) {
   wrapper.style.position = "absolute";
   wrapper.style.transform = "rotateY(1deg)";
   wrapper.style.backfaceVisibility = "hidden";
+  wrapper.style.pointerEvents = "none";
+
+  let kids = wrapper.querySelectorAll("*");
+  kids.forEach((kid) => {
+    kid.style.pointerEvents = "auto";
+  });
 
   if (isOrthographic) wrapper.style.transformStyle = "preserve-3d";
 }
