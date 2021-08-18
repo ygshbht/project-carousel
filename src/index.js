@@ -1,12 +1,11 @@
 import { calcTotalWidth, getWidhtUpto } from "./calcTotalWidth.js";
 import { calcTransformOrigin, wrapDivs } from "./utils.js";
-import { calcVelocity, addForce } from "./calcVelocity.js";
+import { calcVelocity, addForce } from "./kinematics.js";
 import { getRotationY, mouseHoldAtEnd } from "./utils.js";
 import { calcZindex, rotateChild, hideBackface } from "./utils.js";
-import { removeMouseEvents, removeTouchEvents } from "./specific/removeEvents.js";
-import { setContainerStyles, setWrapperStyles } from "./specific/removeEvents.js";
-
-const log = console.log;
+import { removeMouseEvents, removeTouchEvents } from "./utils/removeEvents.js";
+import { setContainerStyles, setWrapperStyles } from "./utils/setStyles.js";
+import setNewRadius from "./utils/setNewRadius.js";
 
 export default class Carousel {
   mouseDown = false;
@@ -19,7 +18,7 @@ export default class Carousel {
   velocity = 0;
   mouseCoordX = 0;
   totalRotation = 0;
-  total_width = 0;
+  totalWidth = 0;
 
   mouseVelMultiplier = 1;
   touchVelMultiplier = 1;
@@ -29,6 +28,7 @@ export default class Carousel {
     this.gap = modifiers.gap ?? 30;
     this.includeMargin = modifiers.includeMargin ?? false;
     this.setStyles = modifiers.setStyles ?? true;
+    this.equidistantElements = modifiers.equidistantElements ?? true;
 
     this.container = container;
     this.elements = wrapDivs(Array.from(this.container.children));
@@ -53,17 +53,25 @@ export default class Carousel {
       includeMargin: this.includeMargin,
       limitWidth: this.limitWidth,
     }).then((width) => {
-      this.total_width = width;
-      this.radius = calcTransformOrigin(this.elements, this.total_width);
+      this.totalWidth = width;
+      this.radius = calcTransformOrigin(this.elements, this.totalWidth);
       this.circumference = Math.abs(2 * Math.PI * this.radius);
       this.degreesPerCircum = 360 / this.circumference;
       this.elements.forEach((elem, index) => {
-        let widthUpto = getWidhtUpto(this.elements, index, this.gap, this.includeMargin);
-        let extraDegress = (widthUpto / this.total_width) * 360;
+        let widthUpto = getWidhtUpto(
+          this.elements,
+          index,
+          this.gap,
+          this.includeMargin
+        );
+        elem.maxRadiusAbs = this.totalWidth / 2;
+        let extraDegress = (widthUpto / this.totalWidth) * 360;
 
         elem.extraDegress = extraDegress;
 
-        elem.style.transform = `rotateY(${(this.totalRotation + extraDegress) % 360}deg)`;
+        elem.style.transform = `rotateY(${
+          (this.totalRotation + extraDegress) % 360
+        }deg)`;
 
         elem.style.zIndex = `${calcZindex(this.totalRotation, extraDegress)}`;
       });
@@ -87,7 +95,8 @@ export default class Carousel {
     this.touchendHandler = () => dragEnd(this.touchVelMultiplier);
     this.container.addEventListener("touchend", this.touchendHandler);
 
-    this.mousemoveHandler = (e) => (this.mouseDown && this.mouse_in ? drag(e.clientX) : null);
+    this.mousemoveHandler = (e) =>
+      this.mouseDown && this.mouse_in ? drag(e.clientX) : null;
     this.container.addEventListener("mousemove", this.mousemoveHandler);
 
     this.mouseupHandler = () => {
@@ -116,24 +125,34 @@ export default class Carousel {
       let degressToRotate = horizontalDistMoved * this.degreesPerCircum;
       this.totalRotation = this.projectRotateY + degressToRotate;
 
-      this.elements.forEach((elem) => {
+      this.elements.forEach((elem, index) => {
         let extraDegress = elem.extraDegress;
         let toRotate = (this.totalRotation + extraDegress) % 360;
         elem.style.transform = `rotateY(${toRotate}deg)`;
         elem.style.zIndex = `${calcZindex(this.totalRotation, extraDegress)}`;
-        //
+
         if (this.isOrthographic) {
           rotateChild(elem.querySelector("*"), -toRotate);
           hideBackface(elem.querySelector("*"));
+
+          if (this.equidistantElements) setNewRadius(elem, toRotate, index);
         }
       });
 
-      this.mouseXpositions.push({ pos: contactPoint, time: new Date().getTime() });
+      this.mouseXpositions.push({
+        pos: contactPoint,
+        time: new Date().getTime(),
+      });
       if (this.mouseXpositions.length >= 15) this.mouseXpositions.shift();
     };
 
     let dragEnd = (multiplier) => {
-      if (this.mouseXpositions.length >= 2) this.velocity = calcVelocity(this.mouseXpositions, this.radius, multiplier);
+      if (this.mouseXpositions.length >= 2)
+        this.velocity = calcVelocity(
+          this.mouseXpositions,
+          this.radius,
+          multiplier
+        );
       else this.velocity = 0;
 
       if (!mouseHoldAtEnd(this.mouseXpositions, this.hold_threshold)) {

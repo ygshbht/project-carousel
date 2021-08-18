@@ -1,12 +1,15 @@
 import { calcZindex, rotateChild } from "./utils.js";
 import { hideBackface, getRotationY } from "./utils.js";
+// import calcScaleFromAngle from "./utils/calcScale.js";
+import setNewRadius from "./utils/setNewRadius.js";
 
 export function calcVelocity(mouseXpositions, radius, factor = 1) {
   let totalPositions = mouseXpositions.length;
   let positionTwo = mouseXpositions[totalPositions - 1];
 
   // Using the fourth last position results in unabrupt movement
-  let positionOne = mouseXpositions[totalPositions - 4] ?? mouseXpositions[totalPositions - 2];
+  let positionOne =
+    mouseXpositions[totalPositions - 4] ?? mouseXpositions[totalPositions - 2];
   let timeTaken = positionTwo.time - positionOne.time;
   let distTravelled = positionTwo.pos - positionOne.pos;
 
@@ -17,7 +20,14 @@ export function calcVelocity(mouseXpositions, radius, factor = 1) {
 }
 
 export function addForce(force_interval, carousel) {
-  let { elements, friction, getVelocity, changeVelocity, nullifyMouseXpositions, isOrthographic } = carousel;
+  let {
+    elements,
+    friction,
+    getVelocity,
+    changeVelocity,
+    nullifyMouseXpositions,
+    equidistantElements,
+  } = carousel;
   nullifyMouseXpositions();
 
   let projectYrotation = getRotationY(elements[0]);
@@ -37,10 +47,12 @@ export function addForce(force_interval, carousel) {
 
     let total_rotation = projectYrotation + velocity;
     elem.style.zIndex = `${calcZindex(total_rotation, extra_degress)}`;
-    //
+
     if (carousel.isOrthographic) {
       rotateChild(elem.querySelector("*"), -toRotate);
       hideBackface(elem.querySelector("*"));
+
+      if (equidistantElements) setNewRadius(elem, toRotate);
     }
   });
 

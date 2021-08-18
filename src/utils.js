@@ -50,6 +50,7 @@ export function calcTransformOrigin(project_list, circumference) {
   let radius = circumference / (Math.PI * 2);
   radius = -radius;
   project_list.forEach((project) => {
+    project.initialRadius = parseFloat(radius)
     project.style.transformOrigin = `50% 50% ${parseFloat(radius)}px`;
   });
   return radius;
