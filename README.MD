@@ -29,6 +29,8 @@ You can make as many carousels you want like:
 
 Imagine all images are put side by side in a row and then the ends of the sidemost images are joined to make a ring. Circumference of this ring/ carousel will be the row's length and radius = circumference/ 2π
 
+Two methods, **next()** and **previous()** of carousel object move elements right or left respectively when invoked .
+
 &nbsp;  
 Additonally, you may enter a third argument (object) while creating a class instance to modify the carousel's behaviour. All options with defaults are as below:
 
@@ -38,6 +40,8 @@ Additonally, you may enter a third argument (object) while creating a class inst
                   isOrthographic: false,
                   equidistantElements: true,
                   setStyles:true,
+                  clickRotationDuration:350,
+                  numOfElemToMovePerClick:1
             }
 
 1. **gap**: Extra space between images
@@ -45,6 +49,8 @@ Additonally, you may enter a third argument (object) while creating a class inst
 3. **isOrthographic**: if true, the carousel will appear like a belt of images rather than a circular carousel
 4. **equidistantElements**: Applicable when Orthographic mode is on. If this is false, the distance between elements will decrease towards the edges of the container
 5. **setStyles**: this property sets the basic CSS styles that are required for the carousel to work, if false, then you may need to add the CSS manually (below)
+6. **clickRotationDuration**: Time in milliseconds it takes to move elements when _next()_ or _previous()_ are invoked
+7. **numOfElemToMovePerClick**: Number of elements to move right or left when _next()_ or _previous()_ are invoked
 
 Many of the below specified stylings are curcial for the carousel to function properly. The same has been provided in a CSS file inside the sibling folder, Styles, of the Script folder.
 
@@ -79,3 +85,9 @@ Speed of elements after swiping can be modified by using the below properties:
 
 Before calculating the circumference of the carousel, the module will wait for all the images to load. If there is any video or other media element, then its width will not be taken into consideration. In such cases you can wait for the media to load and then instantiate the Carousel  
 &nbsp;
+
+Some additional methods:
+
+1. **removeTouchEvents** = removes _Touch_ events from cotnainer
+2. **removeMouseEvents** = removes _Mouse_ events from cotnainer
+3. **removeEvents** = remove both _Touch_ and _Mouse_ events from container

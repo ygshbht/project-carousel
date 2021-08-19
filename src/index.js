@@ -6,6 +6,9 @@ import { calcZindex, rotateChild, hideBackface } from "./utils.js";
 import { removeMouseEvents, removeTouchEvents } from "./utils/removeEvents.js";
 import { setContainerStyles, setWrapperStyles } from "./utils/setStyles.js";
 import setNewRadius from "./utils/setNewRadius.js";
+import getNextElement from "./utils/getNextElement.js";
+import { getPreviousElement } from "./utils/getPreviousElement.js";
+import rotateElements from "./rotateElements.js";
 
 export default class Carousel {
   mouseDown = false;
@@ -29,16 +32,20 @@ export default class Carousel {
     this.includeMargin = modifiers.includeMargin ?? false;
     this.setStyles = modifiers.setStyles ?? true;
     this.equidistantElements = modifiers.equidistantElements ?? true;
+    this.isOrthographic = modifiers.isOrthographic ?? false;
+    this.clickRotationDuration = modifiers.clickRotationDuration ?? 350; //milliseconds
+    this.numOfElemToMovePerClick = modifiers.numOfElemToMovePerClick ?? 1;
 
     this.container = container;
     this.elements = wrapDivs(Array.from(this.container.children));
-    this.isOrthographic = modifiers.isOrthographic ?? false;
 
     this.project = this.elements[0];
     this.projectStyle = getComputedStyle(this.elements[0]);
 
     this.projectRotateY = getRotationY(this.project);
-    this.totalProjects = this.elements.length;
+    this.totalElements = this.elements.length;
+
+    this.minimumClickRotationDist = 20; //pixels?
 
     container.ondragstart = () => false;
     if (this.setStyles) {
@@ -57,6 +64,10 @@ export default class Carousel {
       this.radius = calcTransformOrigin(this.elements, this.totalWidth);
       this.circumference = Math.abs(2 * Math.PI * this.radius);
       this.degreesPerCircum = 360 / this.circumference;
+
+      let lastElement = this.elements[this.totalElements - 1];
+      let firstElement = this.elements[0];
+
       this.elements.forEach((elem, index) => {
         let widthUpto = getWidhtUpto(
           this.elements,
@@ -64,6 +75,13 @@ export default class Carousel {
           this.gap,
           this.includeMargin
         );
+
+        elem.previousElem =
+          index !== 0 ? this.elements[index - 1] : lastElement;
+        elem.nextElem =
+          index !== this.totalElements - 1
+            ? this.elements[index + 1]
+            : firstElement;
         elem.maxRadiusAbs = this.totalWidth / 2;
         let extraDegress = (widthUpto / this.totalWidth) * 360;
 
@@ -169,4 +187,24 @@ export default class Carousel {
   nullifyMouseXpositions = () => (this.mouseXpositions = []);
   removeTouchEvents = () => removeTouchEvents(this);
   removeMouseEvents = () => removeMouseEvents(this);
+  removeEvents = () => {
+    removeMouseEvents(this);
+    removeTouchEvents(this);
+  };
+
+  next = () => {
+    this.velocity = 0;
+    let nextElem = getNextElement(this.elements);
+    let elemRotation = getRotationY(nextElem);
+
+    rotateElements(this, -elemRotation, nextElem, 1);
+  };
+
+  previous = () => {
+    this.velocity = 0;
+    let prevElem = getPreviousElement(this.elements);
+    let elemRotation = getRotationY(prevElem);
+
+    rotateElements(this, -elemRotation, prevElem, -1);
+  };
 }
