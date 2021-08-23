@@ -1,6 +1,6 @@
 {
   "name": "virtual-carousel",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "description": "Image carousel",
   "main": "./lib/index.js",
   "scripts": {
