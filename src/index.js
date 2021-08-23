@@ -95,91 +95,16 @@ export default class Carousel {
       });
     });
 
-    this.mousedownHandler = (e) => dragStart(e.clientX);
-    this.container.addEventListener("mousedown", this.mousedownHandler);
+    this.container.onmouseleave = this.mouseleaveHandler;
+    this.container.onmouseup = this.mouseupHandler;
+    this.container.onmousemove = this.mousemoveHandler;
+    this.container.onmouseenter = this.mouseenterHandler;
+    this.container.onmousedown = this.mousedownHandler;
 
-    this.touchstartHandler = (e) => dragStart(e.targetTouches[0].pageX);
-    this.container.addEventListener("touchstart", this.touchstartHandler);
-
-    this.mouseenterHandler = () => (this.mouse_in = true);
-    this.container.addEventListener("mouseenter", this.mouseenterHandler);
-
-    this.touchmoveHandler = (e) => drag(e.targetTouches[0].pageX);
-    this.container.addEventListener("touchmove", this.touchmoveHandler);
-
-    this.touchcancelHandler = (e) => dragEnd(this.touchVelMultiplier);
-    this.container.addEventListener("touchcancel", this.touchcancelHandler);
-
-    this.touchendHandler = () => dragEnd(this.touchVelMultiplier);
-    this.container.addEventListener("touchend", this.touchendHandler);
-
-    this.mousemoveHandler = (e) =>
-      this.mouseDown && this.mouse_in ? drag(e.clientX) : null;
-    this.container.addEventListener("mousemove", this.mousemoveHandler);
-
-    this.mouseupHandler = () => {
-      this.mouseDown = false;
-      dragEnd(this.mouseVelMultiplier);
-    };
-    this.container.addEventListener("mouseup", this.mouseupHandler);
-
-    this.mouseleaveHandler = () => {
-      this.mouse_in = this.mouseDown = false;
-      if (this.velocity === 0) dragEnd(this.mouseVelMultiplier);
-    };
-    this.container.addEventListener("mouseleave", this.mouseleaveHandler);
-
-    let dragStart = (startingPos) => {
-      this.mouseDown = true;
-      this.mouseCoordX = startingPos;
-      this.velocity = 0;
-      this.projectRotateY = getRotationY(this.project);
-      this.mouseXpositions = [];
-    };
-
-    let drag = (contactPoint) => {
-      let horizontalDistMoved = contactPoint - this.mouseCoordX;
-
-      let degressToRotate = horizontalDistMoved * this.degreesPerCircum;
-      this.totalRotation = this.projectRotateY + degressToRotate;
-
-      this.elements.forEach((elem, index) => {
-        let extraDegress = elem.extraDegress;
-        let toRotate = (this.totalRotation + extraDegress) % 360;
-        elem.style.transform = `rotateY(${toRotate}deg)`;
-        elem.style.zIndex = `${calcZindex(this.totalRotation, extraDegress)}`;
-
-        if (this.isOrthographic) {
-          rotateChild(elem.querySelector("*"), -toRotate);
-          hideBackface(elem.querySelector("*"));
-
-          if (this.equidistantElements) setNewRadius(elem, toRotate, index);
-        }
-      });
-
-      this.mouseXpositions.push({
-        pos: contactPoint,
-        time: new Date().getTime(),
-      });
-      if (this.mouseXpositions.length >= 15) this.mouseXpositions.shift();
-    };
-
-    let dragEnd = (multiplier) => {
-      if (this.mouseXpositions.length >= 2)
-        this.velocity = calcVelocity(
-          this.mouseXpositions,
-          this.radius,
-          multiplier
-        );
-      else this.velocity = 0;
-
-      if (!mouseHoldAtEnd(this.mouseXpositions, this.hold_threshold)) {
-        let force_interval = setInterval(() => {
-          addForce(force_interval, this);
-        }, this.accelerateInterval);
-      }
-      this.mouseXpositions = [];
-    };
+    this.container.ontouchstart = this.touchstartHandler;
+    this.container.ontouchmove = this.touchmoveHandler;
+    this.container.ontouchend = this.touchendHandler;
+    this.container.ontouchcancel = this.touchcancelHandler;
   }
 
   getVelocity = () => this.velocity;
@@ -206,5 +131,83 @@ export default class Carousel {
     let elemRotation = getRotationY(prevElem);
 
     rotateElements(this, -elemRotation, prevElem, -1);
+  };
+
+  mousedownHandler = (e) => this.dragStart(e.clientX);
+
+  touchstartHandler = (e) => this.dragStart(e.targetTouches[0].pageX);
+
+  touchmoveHandler = (e) => this.drag(e.targetTouches[0].pageX);
+
+  touchcancelHandler = (e) => this.dragEnd(this.touchVelMultiplier);
+
+  touchendHandler = () => this.dragEnd(this.touchVelMultiplier);
+
+  mousemoveHandler = (e) => {
+    this.mouseDown && this.mouse_in ? this.drag(e.clientX) : null;
+  };
+
+  mouseenterHandler = () => (this.mouse_in = true);
+
+  mouseupHandler = () => {
+    this.mouseDown = false;
+    this.dragEnd(this.mouseVelMultiplier);
+  };
+
+  mouseleaveHandler = () => {
+    this.mouse_in = this.mouseDown = false;
+    if (this.velocity === 0) this.dragEnd(this.mouseVelMultiplier);
+  };
+
+  dragStart = (startingPos) => {
+    this.mouseDown = true;
+    this.mouseCoordX = startingPos;
+    this.velocity = 0;
+    this.projectRotateY = getRotationY(this.project);
+    this.mouseXpositions = [];
+  };
+
+  drag = (contactPoint) => {
+    let horizontalDistMoved = contactPoint - this.mouseCoordX;
+
+    let degressToRotate = horizontalDistMoved * this.degreesPerCircum;
+    this.totalRotation = this.projectRotateY + degressToRotate;
+
+    this.elements.forEach((elem, index) => {
+      let extraDegress = elem.extraDegress;
+      let toRotate = (this.totalRotation + extraDegress) % 360;
+      elem.style.transform = `rotateY(${toRotate}deg)`;
+      elem.style.zIndex = `${calcZindex(this.totalRotation, extraDegress)}`;
+
+      if (this.isOrthographic) {
+        rotateChild(elem.querySelector("*"), -toRotate);
+        hideBackface(elem.querySelector("*"));
+
+        if (this.equidistantElements) setNewRadius(elem, toRotate, index);
+      }
+    });
+
+    this.mouseXpositions.push({
+      pos: contactPoint,
+      time: new Date().getTime(),
+    });
+    if (this.mouseXpositions.length >= 15) this.mouseXpositions.shift();
+  };
+
+  dragEnd = (multiplier) => {
+    if (this.mouseXpositions.length >= 2)
+      this.velocity = calcVelocity(
+        this.mouseXpositions,
+        this.radius,
+        multiplier
+      );
+    else this.velocity = 0;
+
+    if (!mouseHoldAtEnd(this.mouseXpositions, this.hold_threshold)) {
+      let force_interval = setInterval(() => {
+        addForce(force_interval, this);
+      }, this.accelerateInterval);
+    }
+    this.mouseXpositions = [];
   };
 }
