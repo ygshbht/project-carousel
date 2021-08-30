@@ -41,6 +41,7 @@ Additonally, you may enter a third argument (object) while creating a class inst
                   equidistantElements: true,
                   setStyles:true,
                   clickRotationDuration:350,
+                  minRotationStepDist:35,
             }
 
 1. **gap**: Extra space between images
@@ -49,6 +50,7 @@ Additonally, you may enter a third argument (object) while creating a class inst
 4. **equidistantElements**: Applicable when Orthographic mode is on. If this is false, the distance between elements will decrease towards the edges of the container
 5. **setStyles**: this property sets the basic CSS styles that are required for the carousel to work, if false, then you may need to add the CSS manually (below)
 6. **clickRotationDuration**: Time in milliseconds it takes to move elements when _next()_ or _previous()_ are invoked
+7. **minRotationStepDist**: If the elements will move less then this value (in pixels) when _next()_ or _previous()_ is invoked, then the methods will rotate by 1 more element.
 
 Many of the below specified stylings are curcial for the carousel to function properly. The same has been provided in a CSS file inside the sibling folder, Styles, of the Script folder.
 

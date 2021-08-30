@@ -12,8 +12,22 @@ export default function rotateElements(
   rotationDirection,
   numOfElementsToRotateBy
 ) {
-  let { minimumClickRotationDist, radius } = carousel;
+  let { minRotationStepDist, radius } = carousel;
   numOfElementsToRotateBy = numOfElementsToRotateBy ?? 1;
+
+  let degreeToRotate = getDegToRotate(rotationCausingElem, rotationDirection);
+
+  let rotationInRadian = (degreeToRotate * Math.PI) / 180;
+  let cirumToRotate = radius * rotationInRadian;
+
+  if (Math.abs(cirumToRotate) < minRotationStepDist) {
+    if (rotationDirection === "right") {
+      rotationCausingElem = rotationCausingElem.previousElem;
+    } else {
+      rotationCausingElem = rotationCausingElem.nextElem;
+    }
+    degreeToRotate = getDegToRotate(rotationCausingElem, rotationDirection);
+  }
 
   while (numOfElementsToRotateBy > 1) {
     if (rotationDirection === "left") {
@@ -25,18 +39,7 @@ export default function rotateElements(
     numOfElementsToRotateBy--;
   }
 
-  let degreeToRotate = getDegToRotate(rotationCausingElem, rotationDirection);
-
-  let rotationInRadian = (degreeToRotate * Math.PI) / 180;
-  let cirumToRotate = radius * rotationInRadian;
-  if (Math.abs(cirumToRotate) < minimumClickRotationDist) {
-    if (rotationDirection === "right") {
-      rotationCausingElem = rotationCausingElem.previousElem;
-    } else {
-      rotationCausingElem = rotationCausingElem.nextElem;
-    }
-    degreeToRotate = getDegToRotate(rotationCausingElem, rotationDirection);
-  }
+  degreeToRotate = getDegToRotate(rotationCausingElem, rotationDirection);
 
   animateClickRotaion(carousel, degreeToRotate);
 }

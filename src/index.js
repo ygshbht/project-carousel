@@ -34,7 +34,7 @@ export default class Carousel {
     this.equidistantElements = modifiers.equidistantElements ?? true;
     this.isOrthographic = modifiers.isOrthographic ?? false;
     this.clickRotationDuration = modifiers.clickRotationDuration ?? 350; //milliseconds
-    this.numOfElemToMovePerClick = modifiers.numOfElemToMovePerClick ?? 1;
+    this.minRotationStepDist = modifiers.minRotationStepDist ?? 35; // pixels
 
     this.container = container;
     this.elements = wrapDivs(Array.from(this.container.children));
@@ -44,8 +44,6 @@ export default class Carousel {
 
     this.projectRotateY = getRotationY(this.project);
     this.totalElements = this.elements.length;
-
-    this.minimumClickRotationDist = 35; //pixels
 
     container.ondragstart = () => false;
     if (this.setStyles) {
@@ -93,6 +91,15 @@ export default class Carousel {
 
         elem.style.zIndex = `${calcZindex(this.totalRotation, extraDegress)}`;
       });
+
+      // below is a temporary fix as elements are not scaled properly initally
+      if (this.isOrthographic && this.equidistantElements) {
+        let originalRotationDuration = this.clickRotationDuration;
+        this.clickRotationDuration = 10;
+        this.next();
+        this.previous();
+        this.clickRotationDuration = originalRotationDuration;
+      }
     });
 
     this.container.onmouseleave = this.mouseleaveHandler;
