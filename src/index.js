@@ -45,7 +45,7 @@ export default class Carousel {
     this.projectRotateY = getRotationY(this.project);
     this.totalElements = this.elements.length;
 
-    this.minimumClickRotationDist = 20; //pixels?
+    this.minimumClickRotationDist = 35; //pixels
 
     container.ondragstart = () => false;
     if (this.setStyles) {
@@ -117,20 +117,18 @@ export default class Carousel {
     removeTouchEvents(this);
   };
 
-  next = () => {
+  next = (numOfElementsToRotateBy) => {
     this.velocity = 0;
     let nextElem = getNextElement(this.elements);
-    let elemRotation = getRotationY(nextElem);
 
-    rotateElements(this, -elemRotation, nextElem, 1);
+    rotateElements(this, nextElem, "right", numOfElementsToRotateBy);
   };
 
-  previous = () => {
+  previous = (numOfElementsToRotateBy) => {
     this.velocity = 0;
     let prevElem = getPreviousElement(this.elements);
-    let elemRotation = getRotationY(prevElem);
 
-    rotateElements(this, -elemRotation, prevElem, -1);
+    rotateElements(this, prevElem, "left", numOfElementsToRotateBy);
   };
 
   mousedownHandler = (e) => this.dragStart(e.clientX);

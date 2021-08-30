@@ -29,7 +29,7 @@ You can make as many carousels you want like:
 
 Imagine all images are put side by side in a row and then the ends of the sidemost images are joined to make a ring. Circumference of this ring/ carousel will be the row's length and radius = circumference/ 2π
 
-Two methods, **next()** and **previous()** of carousel object move elements right or left respectively when invoked .
+Two methods, **next()** and **previous()** of carousel object move elements right or left respectively when invoked. Each take an integer as argument that is the number to elements to move right or left by. Default is 1.
 
 &nbsp;  
 Additonally, you may enter a third argument (object) while creating a class instance to modify the carousel's behaviour. All options with defaults are as below:
@@ -41,7 +41,6 @@ Additonally, you may enter a third argument (object) while creating a class inst
                   equidistantElements: true,
                   setStyles:true,
                   clickRotationDuration:350,
-                  numOfElemToMovePerClick:1
             }
 
 1. **gap**: Extra space between images
@@ -50,7 +49,6 @@ Additonally, you may enter a third argument (object) while creating a class inst
 4. **equidistantElements**: Applicable when Orthographic mode is on. If this is false, the distance between elements will decrease towards the edges of the container
 5. **setStyles**: this property sets the basic CSS styles that are required for the carousel to work, if false, then you may need to add the CSS manually (below)
 6. **clickRotationDuration**: Time in milliseconds it takes to move elements when _next()_ or _previous()_ are invoked
-7. **numOfElemToMovePerClick**: Number of elements to move right or left when _next()_ or _previous()_ are invoked
 
 Many of the below specified stylings are curcial for the carousel to function properly. The same has been provided in a CSS file inside the sibling folder, Styles, of the Script folder.
 
