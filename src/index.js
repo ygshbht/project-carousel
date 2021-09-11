@@ -92,13 +92,21 @@ export default class Carousel {
         elem.style.zIndex = `${calcZindex(this.totalRotation, extraDegress)}`;
       });
 
-      // below is a temporary fix as elements are not scaled properly initally
       if (this.isOrthographic && this.equidistantElements) {
-        let originalRotationDuration = this.clickRotationDuration;
-        this.clickRotationDuration = 10;
-        this.next();
-        this.previous();
-        this.clickRotationDuration = originalRotationDuration;
+        let rotation = 0;
+        this.elements.forEach((elem) => {
+          let toRotate = rotation + elem.extraDegress;
+          hideBackface(elem.querySelector("*"), toRotate);
+          rotateChild(elem.querySelector("*"), -toRotate);
+          setNewRadius(elem, toRotate);
+        });
+      } else if (this.isOrthographic && !this.equidistantElements) {
+        let rotation = 0;
+        this.elements.forEach((elem) => {
+          let toRotate = rotation + elem.extraDegress;
+          hideBackface(elem.querySelector("*"), toRotate);
+          rotateChild(elem.querySelector("*"), -toRotate);
+        });
       }
     });
 
