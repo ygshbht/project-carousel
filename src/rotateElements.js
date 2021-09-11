@@ -64,6 +64,11 @@ function animateClickRotaion(carousel, rotationAmount) {
     let firstElemRotation = getRotationY(elements[0]);
     let degreeToRotate = rotationPerInterval;
 
+    // Just the below useless two lines added
+    // if (Math.abs(rotationPerInterval - remainingRotation) <= 0) {
+    //   console.log(rotationPerInterval, remainingRotation);
+    // }
+
     elements.forEach((elem) => {
       let extraDegress = elem.extraDegress;
 

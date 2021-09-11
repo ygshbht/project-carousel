@@ -1,17 +1,26 @@
 import { getVisibleWidth } from "./utils.js";
 
-export function calcTotalWidth(project_list, modifiers = { gap: 0, includeMargin: false }) {
+export function calcTotalWidth(
+  project_list,
+  modifiers = { gap: 0, includeMargin: false }
+) {
   let { gap, includeMargin } = modifiers;
   return new Promise((resolve) => {
     let elementsToConsider = 0;
-    
+
     project_list.forEach((project) => {
       let imgs = project.querySelectorAll("img");
-      imgs.forEach(img => {
+      imgs.forEach((img) => {
         elementsToConsider++;
+      });
+    });
+
+    project_list.forEach((project) => {
+      let imgs = project.querySelectorAll("img");
+      imgs.forEach((img) => {
         if (!img) {
-        addWidthPostLoading();
-        return;
+          addWidthPostLoading();
+          return;
         }
         if (img.complete) {
           addWidthPostLoading();
@@ -20,9 +29,7 @@ export function calcTotalWidth(project_list, modifiers = { gap: 0, includeMargin
             addWidthPostLoading();
           });
         }
-      })
-      
-      
+      });
     });
 
     function addWidthPostLoading() {
@@ -65,5 +72,4 @@ export function getWidhtUpto(project_list, upto, gap, includeMargin) {
   return counter;
 }
 
-
-//max radius = sqrt of (container width/ 2 ^2 + radius ^2)  
+//max radius = sqrt of (container width/ 2 ^2 + radius ^2)
