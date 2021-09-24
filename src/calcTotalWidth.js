@@ -28,6 +28,10 @@ export function calcTotalWidth(
           img.addEventListener("load", () => {
             addWidthPostLoading();
           });
+          img.addEventListener("error", () => {
+            addWidthPostLoading();
+          });
+          return;
         }
       });
     });
