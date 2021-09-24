@@ -18,21 +18,16 @@ export function calcTotalWidth(
     project_list.forEach((project) => {
       let imgs = project.querySelectorAll("img");
       imgs.forEach((img) => {
-        if (!img) {
+        if (!img) return addWidthPostLoading();
+
+        if (img.complete) return addWidthPostLoading();
+
+        img.addEventListener("load", () => {
           addWidthPostLoading();
-          return;
-        }
-        if (img.complete) {
+        });
+        img.addEventListener("error", () => {
           addWidthPostLoading();
-        } else {
-          img.addEventListener("load", () => {
-            addWidthPostLoading();
-          });
-          img.addEventListener("error", () => {
-            addWidthPostLoading();
-          });
-          return;
-        }
+        });
       });
     });
 
