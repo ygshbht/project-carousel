@@ -1,3 +1,4 @@
+import getDegToRotate from "./utils/getDegToRotate.js";
 import {
   calcZindex,
   getRotationY,
@@ -41,10 +42,20 @@ export default function rotateElements(
 
   degreeToRotate = getDegToRotate(rotationCausingElem, rotationDirection);
 
-  animateClickRotaion(carousel, degreeToRotate);
+  animateClickRotaion(
+    carousel,
+    degreeToRotate,
+    rotationCausingElem,
+    rotationDirection
+  );
 }
 
-function animateClickRotaion(carousel, rotationAmount) {
+function animateClickRotaion(
+  carousel,
+  rotationAmount,
+  rotationCausingElem,
+  rotationDirection
+) {
   let { clickRotationDuration: rotationDuration } = carousel;
   let { accelerateInterval: intervalTime } = carousel;
 
@@ -64,10 +75,27 @@ function animateClickRotaion(carousel, rotationAmount) {
     let firstElemRotation = getRotationY(elements[0]);
     let degreeToRotate = rotationPerInterval;
 
-    // Just the below useless two lines added
-    // if (Math.abs(rotationPerInterval - remainingRotation) <= 0) {
-    //   console.log(rotationPerInterval, remainingRotation);
+    // ------------Separator
+
+    // let rotationCausingElemRotaion = getRotationY(rotationCausingElem);
+    // let toRotate = getDegToRotate(rotationCausingElem, rotationDirection);
+
+    // if (rotationAmount > 0) {
+    //   console.log("Rotataion amount is greater than 0");
+    //   if (toRotate < degreeToRotate) {
+    //     degreeToRotate = toRotate;
+    //     remainingRotation = 0;
+    //   }
+    // } else if (rotationAmount < 0) {
+    //   console.log("Rotataion amount is less than 0");
+    //   console.log({ toRotate, degreeToRotate });
+    //   if (toRotate > degreeToRotate) {
+    //     degreeToRotate = toRotate;
+    //     remainingRotation = 0;
+    //   }
     // }
+
+    // ------------Separator
 
     elements.forEach((elem) => {
       let extraDegress = elem.extraDegress;
@@ -93,24 +121,4 @@ function animateClickRotaion(carousel, rotationAmount) {
     }
     remainingRotation = remainingRotation - rotationPerInterval;
   }
-}
-
-function getDegToRotate(rotationCausingElem, rotationDirection) {
-  let elemRotation = getRotationY(rotationCausingElem);
-
-  let degreeToRotate;
-  if (rotationDirection === "left") {
-    if (elemRotation < 0) {
-      degreeToRotate = -(360 + elemRotation);
-    } else if (elemRotation > 0) {
-      degreeToRotate = -elemRotation;
-    }
-  } else if (rotationDirection === "right") {
-    if (elemRotation > 0) {
-      degreeToRotate = 360 - elemRotation;
-    } else if (elemRotation < 0) {
-      degreeToRotate = -elemRotation;
-    }
-  }
-  return degreeToRotate ?? elemRotation;
 }

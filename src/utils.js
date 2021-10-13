@@ -32,9 +32,9 @@ export function getVisibleWidth(element, includeMargin = false) {
 }
 
 export function mouseHoldAtEnd(mouseXpositions, hold_threshold) {
-  if (mouseXpositions.length <= 1) return false;
+  if (mouseXpositions.length <= 1) return true;
   let current_time = new Date().getTime();
-  let last_move_time = mouseXpositions[mouseXpositions.length - 1][1];
+  let last_move_time = mouseXpositions[mouseXpositions.length - 1].time;
   let difference = current_time - last_move_time;
 
   if (difference > hold_threshold) return true;
@@ -42,7 +42,9 @@ export function mouseHoldAtEnd(mouseXpositions, hold_threshold) {
 }
 
 export function calcZindex(total_rotation, extra_degress) {
-  let z_index = Math.floor(Math.abs(180 - (Math.abs((total_rotation + extra_degress) % 360) % 360)));
+  let z_index = Math.floor(
+    Math.abs(180 - (Math.abs((total_rotation + extra_degress) % 360) % 360))
+  );
   return parseInt(z_index);
 }
 
@@ -50,7 +52,7 @@ export function calcTransformOrigin(project_list, circumference) {
   let radius = circumference / (Math.PI * 2);
   radius = -radius;
   project_list.forEach((project) => {
-    project.initialRadius = parseFloat(radius)
+    project.initialRadius = parseFloat(radius);
     project.style.transformOrigin = `50% 50% ${parseFloat(radius)}px`;
   });
   return radius;
