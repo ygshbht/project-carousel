@@ -17,5 +17,6 @@ export default function getDegToRotate(rotationCausingElem, rotationDirection) {
       degreeToRotate = -elemRotation;
     }
   }
+  // console.log({ degreeToRotate, elemRotation, rotationCausingElem });
   return degreeToRotate ?? elemRotation;
 }

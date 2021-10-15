@@ -66,36 +66,27 @@ function animateClickRotaion(
 
   let remainingRotation = rotationAmount;
 
+  // console.log({
+  //   rotationDuration,
+  //   intervalTime,
+  //   numOfTimeToRotate,
+  //   rotationPerInterval,
+  //   rotationAmount,
+  //   elemRotation: getRotationY(rotationCausingElem),
+  // });
+
   let interval = setInterval(
     () => animationIntervalFunction(interval),
     intervalTime
   );
+  let numOfRemainingRotations = numOfTimeToRotate;
 
   function animationIntervalFunction(interval) {
+    // console.log("Ran");
+    numOfRemainingRotations--;
+
     let firstElemRotation = getRotationY(elements[0]);
     let degreeToRotate = rotationPerInterval;
-
-    // ------------Separator
-
-    // let rotationCausingElemRotaion = getRotationY(rotationCausingElem);
-    // let toRotate = getDegToRotate(rotationCausingElem, rotationDirection);
-
-    // if (rotationAmount > 0) {
-    //   console.log("Rotataion amount is greater than 0");
-    //   if (toRotate < degreeToRotate) {
-    //     degreeToRotate = toRotate;
-    //     remainingRotation = 0;
-    //   }
-    // } else if (rotationAmount < 0) {
-    //   console.log("Rotataion amount is less than 0");
-    //   console.log({ toRotate, degreeToRotate });
-    //   if (toRotate > degreeToRotate) {
-    //     degreeToRotate = toRotate;
-    //     remainingRotation = 0;
-    //   }
-    // }
-
-    // ------------Separator
 
     elements.forEach((elem) => {
       let extraDegress = elem.extraDegress;
@@ -113,7 +104,7 @@ function animateClickRotaion(
         if (equidistantElements) setNewRadius(elem, toRotate);
       }
     });
-
+    if (numOfRemainingRotations === 0) clearInterval(interval);
     if (rotationAmount > 0) {
       if (remainingRotation <= 0) clearInterval(interval);
     } else {
