@@ -27,6 +27,9 @@ export default class Carousel {
   touchVelMultiplier = 1;
   mouseXpositions = [];
 
+  shifting = false;
+  shiftingInterval = null;
+
   constructor(container, modifiers = {}) {
     this.gap = modifiers.gap ?? 30;
     this.includeMargin = modifiers.includeMargin ?? false;

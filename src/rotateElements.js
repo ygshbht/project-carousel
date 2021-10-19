@@ -13,6 +13,9 @@ export default function rotateElements(
   rotationDirection,
   numOfElementsToRotateBy
 ) {
+  if (carousel.shifting && carousel.shiftingInterval) {
+    clearInterval(carousel.shiftingInterval);
+  }
   let { minRotationStepDist, radius } = carousel;
   numOfElementsToRotateBy = numOfElementsToRotateBy ?? 1;
 
@@ -50,12 +53,7 @@ export default function rotateElements(
   );
 }
 
-function animateClickRotaion(
-  carousel,
-  rotationAmount,
-  rotationCausingElem,
-  rotationDirection
-) {
+function animateClickRotaion(carousel, rotationAmount) {
   let { clickRotationDuration: rotationDuration } = carousel;
   let { accelerateInterval: intervalTime } = carousel;
 
@@ -66,23 +64,16 @@ function animateClickRotaion(
 
   let remainingRotation = rotationAmount;
 
-  // console.log({
-  //   rotationDuration,
-  //   intervalTime,
-  //   numOfTimeToRotate,
-  //   rotationPerInterval,
-  //   rotationAmount,
-  //   elemRotation: getRotationY(rotationCausingElem),
-  // });
-
   let interval = setInterval(
     () => animationIntervalFunction(interval),
     intervalTime
   );
+  carousel.shifting = true;
+  carousel.shiftingInterval = interval;
+
   let numOfRemainingRotations = numOfTimeToRotate;
 
   function animationIntervalFunction(interval) {
-    // console.log("Ran");
     numOfRemainingRotations--;
 
     let firstElemRotation = getRotationY(elements[0]);
@@ -104,11 +95,23 @@ function animateClickRotaion(
         if (equidistantElements) setNewRadius(elem, toRotate);
       }
     });
-    if (numOfRemainingRotations === 0) clearInterval(interval);
+    if (numOfRemainingRotations === 0) {
+      carousel.shifting = false;
+      carousel.shiftingInterval = null;
+      clearInterval(interval);
+    }
     if (rotationAmount > 0) {
-      if (remainingRotation <= 0) clearInterval(interval);
+      if (remainingRotation <= 0) {
+        carousel.shifting = false;
+        carousel.shiftingInterval = null;
+        clearInterval(interval);
+      }
     } else {
-      if (remainingRotation >= 0) clearInterval(interval);
+      if (remainingRotation >= 0) {
+        this.shifting = false;
+        this.shiftingInterval = null;
+        clearInterval(interval);
+      }
     }
     remainingRotation = remainingRotation - rotationPerInterval;
   }
